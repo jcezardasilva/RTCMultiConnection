@@ -2,13 +2,15 @@
 // RTCMultiConnection.js
 
 (function(connection) {
-    forceOptions = forceOptions || {
+    let forceOptions = forceOptions || {
         useDefaultDevices: true
     };
 
     connection.channel = connection.sessionid = (roomid || location.href.replace(/\/|:|#|\?|\$|\^|%|\.|`|~|!|\+|@|\[|\||]|\|*. /g, '').split('\n').join('').split('\r').join('')) + '';
 
     var mPeer = new MultiPeers(connection);
+    let SocketConnection;
+    let currentUserMediaRequest;
 
     var preventDuplicateOnStreamEvents = {};
     mPeer.onGettingLocalMedia = function(stream, callback) {
@@ -783,7 +785,7 @@
                     connection.mediaConstraints.audio.optional = [];
                 }
 
-                var optional = [{
+                let optional = [{
                     sourceId: lastAudioDevice.id
                 }];
 
@@ -813,7 +815,7 @@
                     connection.mediaConstraints.video.optional = [];
                 }
 
-                var optional = [{
+                let optional = [{
                     sourceId: lastVideoDevice.id
                 }];
 
@@ -1074,9 +1076,8 @@
             onGettingLocalMedia: function(stream) {
                 var videoConstraints = localMediaConstraints.video;
                 if (videoConstraints) {
-                    if (videoConstraints.mediaSource || videoConstraints.mozMediaSource) {
-                        stream.isScreen = true;
-                    } else if (videoConstraints.mandatory && videoConstraints.mandatory.chromeMediaSource) {
+                    if (videoConstraints.mediaSource || videoConstraints.mozMediaSource || 
+                        (videoConstraints.mandatory && videoConstraints.mandatory.chromeMediaSource)) {
                         stream.isScreen = true;
                     }
                 }
@@ -1180,7 +1181,6 @@
 
         if (isData(session)) {
             throw 'connection.replaceTrack requires audio and/or video and/or screen.';
-            return;
         }
 
         if (session.audio || session.video || session.screen) {
@@ -1274,7 +1274,7 @@
 
             if (!isRemote) {
                 // reset attachStreams
-                var streams = [];
+                let streams = [];
                 connection.attachStreams.forEach(function(s) {
                     if (s.id != stream.id) {
                         streams.push(s);
@@ -1300,7 +1300,7 @@
             if (isRemote && connection.peers[streamEvent.userid]) {
                 // reset remote "streams"
                 var peer = connection.peers[streamEvent.userid].peer;
-                var streams = [];
+                let streams = [];
                 peer.getRemoteStreams().forEach(function(s) {
                     if (s.id != stream.id) {
                         streams.push(s);
@@ -1731,7 +1731,7 @@
             };
 
             if (connection.mediaConstraints.audio && connection.mediaConstraints.audio.optional && connection.mediaConstraints.audio.optional.length) {
-                var newArray = [];
+                let newArray = [];
                 connection.mediaConstraints.audio.optional.forEach(function(opt) {
                     if (typeof opt.bandwidth === 'undefined') {
                         newArray.push(opt);
@@ -1741,7 +1741,7 @@
             }
 
             if (connection.mediaConstraints.video && connection.mediaConstraints.video.optional && connection.mediaConstraints.video.optional.length) {
-                var newArray = [];
+                let newArray = [];
                 connection.mediaConstraints.video.optional.forEach(function(opt) {
                     if (typeof opt.bandwidth === 'undefined') {
                         newArray.push(opt);
@@ -1801,7 +1801,6 @@
     };
 
     connection.resetScreen = function() {
-        sourceId = null;
         if (DetectRTC && DetectRTC.screen) {
             delete DetectRTC.screen.sourceId;
         }
