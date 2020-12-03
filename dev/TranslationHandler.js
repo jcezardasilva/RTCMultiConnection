@@ -2,8 +2,15 @@
 
 var TranslationHandler = (function() {
     function handle(connection) {
+        /**
+         * Convert all incoming chat (text) messages into your preferred language
+         */
         connection.autoTranslateText = false;
+        /**
+         * target language
+         */
         connection.language = 'en';
+        
         connection.googKey = 'AIzaSyCgB5hmFY74WYB-EoWkhr9cAGr6TiTHrEE';
 
         // www.RTCMultiConnection.org/docs/Translator/

@@ -158,6 +158,9 @@ function serverHandler(request, response) {
                 } else if (filename.indexOf(resolveURL('/admin/')) !== -1) {
                     filename = filename.replace(resolveURL('/admin/'), '');
                     filename += resolveURL('/admin/index.html');
+                } else if (filename.indexOf(resolveURL('/demos/broadcasting/')) !== -1) {
+                    filename = filename.replace(resolveURL('/demos/broadcasting/'), '');
+                    filename += resolveURL('/demos/broadcasting/index.html');
                 } else if (filename.indexOf(resolveURL('/demos/dashboard/')) !== -1) {
                     filename = filename.replace(resolveURL('/demos/dashboard/'), '');
                     filename += resolveURL('/demos/dashboard/index.html');
